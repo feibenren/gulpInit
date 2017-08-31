@@ -34,7 +34,7 @@ gulp.task('img',()=>{
 //服务器
 gulp.task('serve',['clean','css','js','img'],()=>{
     browserSync.init({
-        server:['./app/','./tmp/']
+        server:['./tmp/','./app/']
     });
     gulp.watch('./app/scss/**/*.scss',['css']);
     gulp.watch('./app/js/*.js',['js']);
