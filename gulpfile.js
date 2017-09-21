@@ -6,6 +6,17 @@ var browserSync=require('browser-sync').create();
 var reload=browserSync.reload;
 var dev=true;
 
+gulp.task('html',()=>{
+    return gulp.src('./app/**/*.html')
+        .pipe($.fileInclude({
+            prefix: '<!--@@',
+            suffix:'-->',
+            basepath: './app/include/'
+          }))
+        .pipe(gulp.dest('./tmp'))
+        .pipe(reload({stream:true}))
+});
+
 gulp.task('css',()=>{
     return gulp.src('./app/scss/**/*.scss')
         .pipe($.plumber())
@@ -32,14 +43,19 @@ gulp.task('img',()=>{
         .pipe(reload({stream:true}))
 });    
 //服务器
-gulp.task('serve',['clean','css','js','img'],()=>{
+gulp.task('serve',['clean','html','css','js','img'],()=>{
     browserSync.init({
         server:['./tmp/','./app/']
     });
     gulp.watch('./app/scss/**/*.scss',['css']);
     gulp.watch('./app/js/*.js',['js']);
-    gulp.watch('./app/*.html',reload);
-    gulp.watch('./app/img/*',reload);
+    gulp.watch('./app/**/*.html',['html']);
+    gulp.watch('./app/img/**/*',reload);
+});
+
+gulp.task('build',['clean','html','css','js','img'],()=>{
+    return gulp.src('./tmp/**/*')
+    .pipe(gulp.dest('./dist/'))
 });
 
 gulp.task('clean',()=>{
